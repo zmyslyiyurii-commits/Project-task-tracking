@@ -1,0 +1,139 @@
+/* 1. Скидання стилів та основа */
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+
+body, html {
+    height: 100%; 
+    width: 100%;
+    background-color: #000; /* Базовий колір під анімацією */
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: white;
+    overflow: hidden; /* Щоб не було зайвої прокрутки через анімацію */
+}
+
+#iridescence-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1; /* Фон під усім контентом */
+    pointer-events: none; /* Пропускає кліки до кнопок */
+}
+
+.glass-overlay {
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    width: 100vw;
+    background: transparent !important; /* ПЕРЕВІР ЦЕ */
+    backdrop-filter: none !important;  /* ВИМКНИ БЛЮР ТИМЧАСОВО */
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+/* 4. Навігація */
+.header {
+    position: relative; 
+    z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+.logo-text { font-size: 24px; font-weight: 600; }
+
+.nav-menu { display: flex; align-items: center; gap: 40px; }
+.nav-links { display: flex; gap: 25px; }
+
+.nav-item {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: 0.3s;
+}
+.nav-item:hover { color: white; }
+
+.register-btn {
+    background: white;
+    color: black;
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: 0.3s;
+    cursor: pointer;
+}
+.register-btn:hover { background: rgba(255, 255, 255, 0.9); }
+
+/* 5. Hero Section */
+.hero { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    justify-content: center; 
+    align-items: center;
+    position: relative;
+    z-index: 10;
+}
+
+.version-pill {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 5px 12px;
+    border-radius: 30px;
+    display: flex; 
+    align-items: center; 
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.badge {
+    background: white; 
+    color: black;
+    font-size: 10px; 
+    font-weight: 800;
+    padding: 2px 8px; 
+    border-radius: 10px;
+}
+
+.hero-title {
+    font-size: 68px; 
+    font-weight: 800;
+    text-align: center; 
+    max-width: 850px;
+    line-height: 1.1; 
+    margin-bottom: 40px;
+    letter-spacing: -1.5px;
+}
+
+/* 6. Кнопки */
+.button-group { display: flex; gap: 15px; }
+
+.btn-white, .btn-ghost {
+    padding: 16px 35px; 
+    border-radius: 12px;
+    font-weight: 700; 
+    text-decoration: none;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.btn-white { background: white; color: black; }
+.btn-ghost {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.btn-white:hover, .btn-ghost:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}

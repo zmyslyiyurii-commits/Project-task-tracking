@@ -1,0 +1,160 @@
+/* 1. Центрування на сторінці */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #121212; /* Глибокий темний фон */
+    font-family: sans-serif;
+}
+
+.container {
+    --form-width: 320px;
+    --aspect-ratio: 1.4;
+    --login-box-color: #1c1c1c;
+    
+    position: relative;
+    width: var(--form-width);
+    height: calc(var(--form-width) * var(--aspect-ratio));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 24px;
+    overflow: hidden; /* Щоб анімація не вилазила за краї */
+}
+
+/* 2. Анімація бігаючого світла */
+.container::before {
+    content: "";
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    background: conic-gradient(
+        transparent 70%, 
+        #ffffff 90%, 
+        transparent 100%
+    );
+    animation: rotate 4s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 3. Основна плашка форми */
+.login-box {
+    position: absolute;
+    inset: 2px; /* Створює тонку рамку, де видно анімацію */
+    background: var(--login-box-color);
+    border-radius: 22px;
+    z-index: 10;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+/* 4. Стилізація елементів */
+.logo {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
+.user-icon {
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #333, #000);
+}
+
+.user-icon svg {
+    width: 35px;
+    height: 35px;
+}
+
+.header {
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+.input {
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box; /* Важливо, щоб input не вилазив за межі */
+    border-radius: 10px;
+    border: 1px solid #333;
+    background: #2a2a2a;
+    color: white;
+    outline: none;
+}
+
+.input:focus {
+    border-color: #555;
+}
+
+.button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.sign-in {
+    background: #ffffff;
+    color: #000;
+}
+
+.google-sign-in {
+    background: #2a2a2a;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.icon {
+    width: 18px;
+}
+
+.button:hover {
+    opacity: 0.8;
+    transform: translateY(-1px);
+}
+
+.footer {
+    color: #888;
+    font-size: 13px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.link {
+    color: #fff;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}

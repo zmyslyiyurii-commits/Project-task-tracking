@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Tracker</title>
+    <link rel="stylesheet" href="{% static 'main.css' %}">
+</head>
+<body class="main-container">
+    <div id="iridescence-bg"></div>
+
+    <div class="glass-overlay">
+        <header class="header">
+            <div class="brand">
+                <div class="icon-wrapper">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="react-icon">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <ellipse cx="12" cy="12" rx="10" ry="4"></ellipse>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(60 12 12)"></ellipse>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(120 12 12)"></ellipse>
+                    </svg>
+                </div>
+                <span class="logo-text">Task Tracker</span>
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-links">
+                    <a href="#" class="nav-item">Особливості</a>
+                    <a href="#" class="nav-item">Про нас</a>
+                </div>
+                <a href="{% url 'login' %}" class="register-btn" style="z-index: 9999; position: relative;">
+                    Зареєструватися
+                </a>
+            </nav>
+        </header>
+
+        <main class="hero">
+            <div class="version-pill">
+                <span class="badge">НОВИЙ</span>
+                <span class="pill-text">☁️ Щойно відправлено v1.0</span>
+            </div>
+
+            <h1 class="hero-title">Керуй завданнями з легкістю та стилем</h1>
+
+            <div class="button-group">
+                <a href="#" class="btn-white">Почати</a>
+                <a href="#" class="btn-ghost">Дізнатися більше</a>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="{% static 'background.js' %}"></script>
+</body>
+</html>
