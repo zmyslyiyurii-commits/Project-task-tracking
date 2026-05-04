@@ -1,0 +1,166 @@
+/* Базовий стиль */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background: #050505; /* Глибокий чорний для контрасту */
+    font-family: 'Inter', -apple-system, sans-serif;
+}
+
+#grainient-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+}
+
+/* Сайдбар - Ультра-скло */
+.sidebar {
+    position: fixed;
+    left: 12px; top: 12px; bottom: 12px; /* Відступ від країв для ефекту "плаваючої" панелі */
+    width: 72px;
+    background: rgba(255, 255, 255, 0.03); 
+    backdrop-filter: blur(40px) saturate(180%) brightness(1.1);
+    -webkit-backdrop-filter: blur(40px) saturate(180%) brightness(1.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px; /* Закруглені краї панелі */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0;
+    z-index: 100;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* Логотип */
+.nav-logo {
+    margin-bottom: 25px;
+}
+.logo-image-wrapper {
+    width: 44px; height: 44px;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+}
+.logo-image { width: 100%; height: 100%; object-fit: cover; }
+
+/* Кнопки меню */
+.nav-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    flex-grow: 1;
+    align-items: center;
+    width: 100%;
+}
+
+.nav-item {
+    position: relative;
+    width: 46px; height: 46px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border-radius: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid transparent;
+}
+
+.nav-item svg {
+    width: 22px !important;
+    height: 22px !important;
+    stroke-width: 2px;
+    transition: transform 0.3s ease;
+}
+
+/* Ефект при наведенні - м'яке підсвічування */
+.nav-item:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+}
+
+.nav-item:hover svg {
+    transform: scale(1.1);
+}
+
+/* Активна кнопка - Градієнтний акцент */
+.nav-item.active {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(82, 39, 255, 0.3));
+    color: #fff;
+    border: 1px solid rgba(168, 85, 247, 0.5);
+    box-shadow: 0 8px 20px rgba(168, 85, 247, 0.2);
+}
+
+/* Крапка сповіщень - "Жива" */
+.notification-dot {
+    position: absolute;
+    top: 10px; right: 10px;
+    width: 7px; height: 7px;
+    background: #ff3b30;
+    border-radius: 50%;
+    box-shadow: 0 0 12px #ff3b30, 0 0 4px #ff3b30;
+    animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow {
+    from { box-shadow: 0 0 5px #ff3b30; }
+    to { box-shadow: 0 0 15px #ff3b30, 0 0 8px rgba(255, 59, 48, 0.6); }
+}
+
+/* СКЛЯНІ ПІДКАЗКИ (Floating Labels) */
+.dock-label {
+    position: absolute;
+    left: 70px;
+    background: rgba(20, 20, 25, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-15px) scale(0.95);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+}
+
+.nav-item:hover .dock-label {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(5px) scale(1);
+}
+
+/* Низ сайдбара */
+.nav-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+    margin-top: auto;
+}
+
+.user-avatar {
+    width: 40px; height: 40px;
+    background: linear-gradient(45deg, #5227FF, #FF9FFC);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 5px 15px rgba(82, 39, 255, 0.3);
+}

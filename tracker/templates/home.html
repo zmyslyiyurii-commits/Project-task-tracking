@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Worksection Home</title>
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <!-- Шар анімованого фону -->
+    <div id="grainient-container"></div>
+
+    <!-- Вертикальна панель (Сайдбар) -->
+    <nav class="sidebar" id="sidebar">
+        <!-- Логотип -->
+        <div class="nav-logo">
+            <div class="logo-image-wrapper">
+                <img src="{% static 'logo.png' %}" alt="Yura" class="logo-image">
+            </div>
+        </div>
+        
+        <!-- Основна група (Dock) -->
+        <div class="nav-group" id="dock-container">
+            <button class="nav-item" title="Проєкт">
+                <i data-lucide="layout-grid"></i>
+                <span class="dock-label">Проєкт</span>
+            </button>
+            <button class="nav-item" title="Мої завдання">
+                <i data-lucide="check-square"></i>
+                <span class="dock-label">Завдання</span>
+            </button>
+            <button class="nav-item" title="Сповіщення">
+                <i data-lucide="bell"></i>
+                <span class="dock-label">Сповіщення</span>
+                <span class="notification-dot"></span>
+            </button>
+            <button class="nav-item" title="Пошук">
+                <i data-lucide="search"></i>
+                <span class="dock-label">Пошук</span>
+            </button>
+            <button class="nav-item" title="Чати">
+                <i data-lucide="message-circle"></i>
+                <span class="dock-label">Чати</span>
+            </button>
+            <button class="nav-item active" title="Збережене">
+                <i data-lucide="star"></i>
+                <span class="dock-label">Збережене</span>
+            </button>
+        </div>
+
+        <!-- Нижня група -->
+        <div class="nav-bottom">
+            <button class="nav-item secondary">
+                <i data-lucide="plus-circle"></i>
+                <span class="dock-label">Додати</span>
+            </button>
+            <div class="user-avatar">{{ user.username|slice:":1"|upper }}</div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="content-overlay"></div>
+    </main>
+
+    <!-- Ініціалізація фону -->
+    <script type="module">
+        import { initGrainient } from "{% static 'backgroundhome.js' %}";
+        window.addEventListener('load', () => {
+            const container = document.getElementById('grainient-container');
+            if (container) {
+                initGrainient(container, {
+                    color1: "#FF9FFC", color2: "#5227FF", color3: "#B497CF",
+                    timeSpeed: 0.2, zoom: 1.0
+                });
+                setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50);
+            }
+        });
+    </script>
+
+    <!-- Логіка Dock анімації -->
+    <script>
+        lucide.createIcons();
+
+        const sidebar = document.getElementById('sidebar');
+        const items = document.querySelectorAll('.nav-item');
+        const baseSize = 48;
+        const magnification = 65;
+        const distanceLimit = 85;
+
+        // Анімація працює ТІЛЬКИ коли мишка в межах сайдбару
+        sidebar.addEventListener('mousemove', (e) => {
+            items.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                const centerY = rect.top + rect.height / 2;
+                const distance = Math.abs(e.clientY - centerY);
+
+                if (distance < distanceLimit) {
+                    const ratio = 1 - distance / distanceLimit;
+                    const newSize = baseSize + (magnification - baseSize) * Math.pow(ratio, 2);
+                    item.style.width = `${newSize}px`;
+                    item.style.height = `${newSize}px`;
+                } else {
+                    item.style.width = `${baseSize}px`;
+                    item.style.height = `${baseSize}px`;
+                }
+            });
+        });
+
+        // Скидання розмірів, коли мишка виходить за межі сайдбару
+        sidebar.addEventListener('mouseleave', () => {
+            items.forEach(item => {
+                item.style.width = `${baseSize}px`;
+                item.style.height = `${baseSize}px`;
+            });
+        });
+    </script>
+</body>
+</html>
