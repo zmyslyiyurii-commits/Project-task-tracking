@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Task 
+from .models import Task, Project 
 
 @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):
@@ -11,3 +11,7 @@ class TaskAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description')
     # Дозволяє редагувати статус "виконано" прямо в списку, не заходячи всередину завдання
     list_editable = ('is_completed',)
+
+@admin.register(Project)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('name', 'user', 'created_at')

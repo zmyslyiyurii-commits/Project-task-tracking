@@ -1,11 +1,11 @@
-/* Базовий стиль */
+/* 1. БАЗОВИЙ СТИЛЬ ТА ФОН */
 html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    background: #050505; /* Глибокий чорний для контрасту */
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* Забороняємо скрол всьому тілу */
+    background: #050505;
     font-family: 'Inter', -apple-system, sans-serif;
 }
 
@@ -16,28 +16,25 @@ html, body {
     z-index: 0;
 }
 
-/* Сайдбар - Ультра-скло */
+/* 2. САЙДБАР (ТВІЙ ОРИГІНАЛЬНИЙ СТИЛЬ) */
 .sidebar {
     position: fixed;
-    left: 12px; top: 12px; bottom: 12px; /* Відступ від країв для ефекту "плаваючої" панелі */
+    left: 12px; top: 12px; bottom: 12px;
     width: 72px;
     background: rgba(255, 255, 255, 0.03); 
     backdrop-filter: blur(40px) saturate(180%) brightness(1.1);
     -webkit-backdrop-filter: blur(40px) saturate(180%) brightness(1.1);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px; /* Закруглені краї панелі */
+    border-radius: 24px;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
-    z-index: 100;
+    z-index: 1000;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
-/* Логотип */
-.nav-logo {
-    margin-bottom: 25px;
-}
+.nav-logo { margin-bottom: 25px; }
 .logo-image-wrapper {
     width: 44px; height: 44px;
     border-radius: 14px;
@@ -47,7 +44,6 @@ html, body {
 }
 .logo-image { width: 100%; height: 100%; object-fit: cover; }
 
-/* Кнопки меню */
 .nav-group {
     display: flex;
     flex-direction: column;
@@ -78,7 +74,6 @@ html, body {
     transition: transform 0.3s ease;
 }
 
-/* Ефект при наведенні - м'яке підсвічування */
 .nav-item:hover {
     background: rgba(255, 255, 255, 0.08);
     color: #fff;
@@ -86,11 +81,6 @@ html, body {
     transform: scale(1.05);
 }
 
-.nav-item:hover svg {
-    transform: scale(1.1);
-}
-
-/* Активна кнопка - Градієнтний акцент */
 .nav-item.active {
     background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(82, 39, 255, 0.3));
     color: #fff;
@@ -98,14 +88,14 @@ html, body {
     box-shadow: 0 8px 20px rgba(168, 85, 247, 0.2);
 }
 
-/* Крапка сповіщень - "Жива" */
+/* Крапка сповіщень */
 .notification-dot {
     position: absolute;
     top: 10px; right: 10px;
     width: 7px; height: 7px;
     background: #ff3b30;
     border-radius: 50%;
-    box-shadow: 0 0 12px #ff3b30, 0 0 4px #ff3b30;
+    box-shadow: 0 0 12px #ff3b30;
     animation: glow 1.5s infinite alternate;
 }
 
@@ -114,13 +104,12 @@ html, body {
     to { box-shadow: 0 0 15px #ff3b30, 0 0 8px rgba(255, 59, 48, 0.6); }
 }
 
-/* СКЛЯНІ ПІДКАЗКИ (Floating Labels) */
+/* Підказки (Dock Labels) */
 .dock-label {
     position: absolute;
     left: 70px;
     background: rgba(20, 20, 25, 0.7);
     backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
     padding: 8px 16px;
     border-radius: 12px;
     font-size: 13px;
@@ -128,7 +117,6 @@ html, body {
     color: #fff;
     white-space: nowrap;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     opacity: 0;
     visibility: hidden;
     transform: translateX(-15px) scale(0.95);
@@ -142,7 +130,6 @@ html, body {
     transform: translateX(5px) scale(1);
 }
 
-/* Низ сайдбара */
 .nav-bottom {
     display: flex;
     flex-direction: column;
@@ -156,11 +143,853 @@ html, body {
     background: linear-gradient(45deg, #5227FF, #FF9FFC);
     border-radius: 12px;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
+    align-items: center; justify-content: center;
+    color: white; font-weight: 600;
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 5px 15px rgba(82, 39, 255, 0.3);
+}
+
+/* 3. ВЕРХНЯ ПАНЕЛЬ (ФІКСОВАНА) */
+.top-bar {
+    position: fixed;
+    top: 12px;
+    left: 100px; 
+    right: 12px;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    z-index: 900;
+}
+
+.app-title { color: white; font-size: 18px; font-weight: 700; }
+.current-time { color: rgba(255, 255, 255, 0.8); font-family: monospace; font-size: 18px; }
+
+/* 4. ОСНОВНИЙ КОНТЕНТ (СКРОЛ ТУТ) */
+.main-content {
+    margin-left: 94px;
+    padding-top: 85px;
+    height: 100vh;
+    overflow-y: auto;
+    display: block;
+    box-sizing: border-box;
+    position: relative;
+    z-index: 10;
+}
+
+.main-content::-webkit-scrollbar { width: 6px; }
+.main-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+
+/* 5. СІТКА КАРТОК (2 КОЛОНКИ) */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+}
+
+/* 6. КАРТКИ */
+.glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(30px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 28px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    min-height: 280px;
+    transition: transform 0.3s ease;
+}
+
+.glass-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(168, 85, 247, 0.4);
+}
+
+/* РОБИМО ЗАГОЛОВОК КАРТКИ ВІДНОСНИМ КОНТЕЙНЕРОМ */
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Це центрує header-left вертикально */
+    margin-bottom: 20px;
+    color: white;
+    position: relative; /* ДОДАЙТЕ ЦЕ, щоб .more-btn міг позиціонуватися відносно цього блоку */
+}
+
+/* header-left залишається на місці */
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* НОВІ СТИЛІ ДЛЯ ПОЗИЦІОНУВАННЯ КНОПКИ */
+.more-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    /* НОВІ ПРАВИЛА ПОЗИЦІОНУВАННЯ */
+    position: absolute; /* Абсолютне позиціювання */
+    top: 5px; /* Зазор 5px від верхнього краю .card-header */
+    right: 5px; /* Зазор 5px від правого краю .card-header */
+}
+
+.more-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border-color: rgba(168, 85, 247, 0.5);
+}
+
+@media (max-width: 1100px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+}
+
+/* ПУСТИЙ СТАН (КОНТЕЙНЕР) */
+.empty-state {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    /* Відступ dash можна прибрати або залишити, якщо подобається */
+    border: 1px dashed rgba(255, 255, 255, 0.08); 
+    border-radius: 20px;
+    padding: 20px;
+}
+
+/* НОВИЙ СТИЛЬ ДЛЯ ОСНОВНОГО ЗАГОЛОВКА */
+.state-title {
+    margin: 0 0 10px 0; /* Прибираємо відступи, додаємо 10px знизу */
+    color: rgba(255, 255, 255, 0.9); /* Майже білий, м'який колір */
+    font-size: 1.1rem; /* Розмір як на зразку */
+    font-weight: 600; /* Жирний */
+    line-height: 1.4; /* Покращуємо читабельність */
+}
+
+/* НОВИЙ СТИЛЬ ДЛЯ ПІДЗАГОЛОВКА (СІРИЙ) */
+.state-subtitle {
+    margin: 0; /* Прибираємо стандартні відступи */
+    color: rgba(255, 255, 255, 0.4); /* Напівпрозорий сірий, як на зразку */
+    font-size: 0.95rem; /* Трохи менший */
+    font-weight: 400; /* Звичайний, не жирний */
+}
+
+
+
+/* РОЗШИРЕНА КАРТКА НА ВСЮ ШИРИНУ */
+.glass-card.full-width {
+    grid-column: 1 / -1; /* Займає обидві колонки сітки */
+    min-height: auto;
+    padding-bottom: 30px;
+}
+
+/* СТИЛЬ ПОШУКУ */
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 8px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    flex-grow: 0;
+    min-width: 250px;
+}
+
+.search-input {
+    background: transparent;
+    border: none;
+    color: white;
+    outline: none;
+    font-size: 0.95rem;
+    width: 100%;
+}
+
+.search-wrapper i {
+    color: rgba(255, 255, 255, 0.5);
+    width: 18px;
+}
+
+/* СПИСОК УЧАСНИКІВ */
+.participants-list {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.participant-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    padding: 20px;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.2s;
+}
+
+.participant-item:hover {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-3px);
+}
+
+/* АВАТАРИ */
+.avatar {
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: bold; font-size: 1.2rem;
+}
+
+.user-avatar-circle {
+    background: #a1a1a1; /* Сірий як на скрині */
+    color: #333;
+}
+
+.invite-avatar {
+    background: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
+    border: 1px dashed rgba(168, 85, 247, 0.4);
+}
+
+/* ТЕКСТ ТА КНОПКИ У КАРТЦІ УЧАСНИКА */
+.user-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.user-name { color: white; font-size: 0.9rem; font-weight: 500; }
+.user-org { color: rgba(255, 255, 255, 0.4); font-size: 0.75rem; }
+
+.invite-btn, .chat-link-btn {
+    background: rgba(168, 85, 247, 0.15);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    color: #d8b4fe;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.invite-btn:hover, .chat-link-btn:hover {
+    background: #a855f7;
+    color: white;
+}
+
+/* Прибираємо нижній бордюр у заголовку цієї картки */
+.no-border { margin-bottom: 15px; }
+
+
+
+/* Основний стан - сховано за екраном справа */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Повністю сховано */
+    width: 100%;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4); /* Затемнення фону */
+    z-index: 9999;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* Стан, коли ми додали клас через JS */
+.modal-overlay.active {
+    right: 0; /* Висуваємо на екран */
+}
+
+/* Контент самої шторки */
+.modal-content {
+    width: 100%;
+    max-width: 600px;
+    height: 100%;
+    background: #ffffff; /* Світлий фон як у Worksection */
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.title-input {
+    width: 100%;
+    border: none;
+    font-size: 24px;
+    font-weight: 500;
+    margin: 20px 0;
+    outline: none;
+    color: #444;
+}
+
+.task-meta {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.meta-btn {
+    border: 1px dashed #ccc;
+    background: none;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    color: #666;
+    cursor: pointer;
+}
+
+.submit-btn {
+    background: #73c2fb; /* Блакитна кнопка */
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-left: auto;
+    display: block;
+}
+
+/* Маленьке вікно для вводу назви */
+.task-name-card {
+    width: 400px;
+    padding: 15px;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.name-input-field {
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    padding: 15px 0;
+    outline: none;
+    color: #333;
+}
+
+.user-chip-mini {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #666;
+}
+
+.avatar-xxs {
+    width: 20px; height: 20px;
+    background: #aaa; color: white;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+}
+
+.submit-next-btn {
+    background: #333;
+    color: white;
+    border-radius: 50%;
+    width: 32px; height: 32px;
+    border: none;
+    cursor: pointer;
+}
+
+
+/* --- ТЕМНА СКЛЯНА МОДАЛКА (GLASSMORPHISM) --- */
+
+.glass-modal {
+    background: rgba(255, 255, 255, 0.05) !important; /* Дуже прозорий білий */
+    backdrop-filter: blur(25px) saturate(150%) brightness(1.2); /* Сильне розмиття */
+    -webkit-backdrop-filter: blur(25px) saturate(150%) brightness(1.2);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 30px 0 0 30px; /* Заокруглення тільки зліва для висувної панелі */
+    color: white;
+}
+
+/* Верхня панель інструментів у модалці */
+.modal-header-glass {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.project-pill {
+    background: rgba(255, 255, 255, 0.08);
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    cursor: pointer;
+}
+
+.glass-icon-btn, .close-glass {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.glass-icon-btn:hover, .close-glass:hover {
+    color: white;
+}
+
+/* Тіло модалки */
+.modal-body-glass {
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-grow: 1;
+}
+
+.glass-title-input {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    outline: none;
+    width: 100%;
+}
+
+.glass-title-input::placeholder {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+/* Рядок з мета-даними (теги, кнопки) */
+.glass-meta-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.glass-user-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+.avatar-mini-glass {
+    width: 20px; height: 20px;
+    background: linear-gradient(45deg, #5227FF, #FF9FFC);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.glass-meta-btn {
+    background: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.glass-meta-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: white;
+    color: white;
+}
+
+/* Текстова область */
+.glass-textarea {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 16px;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+    flex-grow: 1;
+    min-height: 200px;
+}
+
+/* Нижня панель інструментів (іконки) */
+.glass-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    color: rgba(255, 255, 255, 0.4);
+    padding: 15px 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-toolbar i {
+    cursor: pointer;
+    width: 18px;
+    transition: 0.2s;
+}
+
+.glass-toolbar i:hover {
+    color: #a855f7;
+}
+
+.spacer { flex-grow: 1; }
+
+/* Кнопка створення */
+.modal-footer-glass {
+    padding: 20px 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-submit-btn {
+    background: linear-gradient(135deg, #5227FF, #A855F7);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    float: right;
+    box-shadow: 0 10px 20px rgba(82, 39, 255, 0.3);
+    transition: transform 0.2s;
+}
+
+.glass-submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(82, 39, 255, 0.5);
+}
+#project-selector, #meta-row-task {
+    transition: opacity 0.2s ease;
+}
+
+/* Контейнер для вибору проєкту */
+.project-select-wrapper {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1); /* Напівпрозорий фон */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Світла рамка */
+    border-radius: 12px;
+    padding: 5px 12px;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+/* Сам елемент вибору (Select) */
+.glass-select {
+    background: transparent; /* Робимо фон прозорим */
+    border: none;
+    color: white; /* Білий текст */
+    font-size: 14px;
+    font-weight: 500;
+    outline: none;
+    cursor: pointer;
+    font-family: inherit;
+    appearance: none; /* Прибираємо стандартну стрілку */
+}
+
+/* Колір варіантів, коли список відкритий */
+.glass-select option {
+    background: #2a1b52; /* Темний фон, щоб текст було видно */
+    color: white;
+}
+
+/* Стиль іконки папки */
+.icon-mini {
+    width: 16px;
+    height: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Ефект при наведенні */
+.project-select-wrapper:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+
+
+
+
+
+/* Контейнер для списку завдань */
+.task-list-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Окремий рядок завдання */
+.task-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.task-entry:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px); /* Легке зміщення вправо при наведенні */
+}
+
+.task-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.task-icon {
+    width: 16px;
+    height: 16px;
+    color: #FF9FFC; /* Рожевий акцент під твій фон */
+}
+
+.task-text {
+    font-size: 14px;
+    font-weight: 400;
+    color: white;
+}
+/* Маленька мітка проєкту біля назви завдання */
+.task-project-tag {
+    font-size: 11px;
+    background: rgba(82, 39, 255, 0.3); /* Фіолетовий фон */
+    color: #d1c4ff;
+    padding: 2px 8px;
+    border-radius: 8px;
+    margin-left: 8px;
+    border: 1px solid rgba(82, 39, 255, 0.4);
+}
+
+/* Теги проєктів у картці "Проєкти" */
+.project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.project-chip {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 14px;
+    border-radius: 12px;
+    color: white;
+    font-size: 13px;
+    cursor: default;
+    transition: 0.2s;
+}
+
+.project-chip:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: #FF9FFC;
+}
+.task-time {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Стиль для повідомлення "Завдань немає" */
+.empty-state {
+    text-align: center;
+    padding: 20px 0;
+    opacity: 0.5;
+}
+
+.state-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.state-subtitle {
+    font-size: 12px;
+}
+/* Стиль для назви проєкту поруч із завданням */
+.task-project-tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(255, 255, 255, 0.15); /* Світла напівпрозора підкладка */
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 6px;
+    margin-left: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: inline-block;
+    vertical-align: middle;
+}
+
+/* Оновимо task-info, щоб елементи стояли рівно */
+.task-info {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* Щоб на малих екранах тег не вилізав */
+}
+
+/* Робимо контейнер селектора видимим */
+.project-select-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 0 15px; /* Відступи, щоб не зливався з кнопками */
+    cursor: pointer;
+}
+
+/* Стиль самого випадаючого списку */
+.glass-select {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    appearance: none; /* Прибираємо стандартну стрілку браузера */
+}
+
+.glass-select option {
+    background: #5227FF; /* Колір фону списку, щоб текст було видно */
+    color: white;
+}
+/* Новий контейнер для селектора всередині тіла */
+.project-selection-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.07);
+    padding: 8px 15px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-select-main {
+    background: transparent;
+    border: none;
+    color: #FF9FFC; /* Робимо текст яскравим */
+    font-size: 14px;
+    width: 100%;
+    outline: none;
+    cursor: pointer;
+}
+
+.glass-select-main option {
+    background: #2a1b52; /* Темний фон для списку */
+    color: white;
+}
+
+/* Кнопка закриття, яку точно буде видно */
+.close-modal-fixed {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-modal-fixed:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Зміщення верхнього меню вліво при відкритій модалці */
+.top-bar {
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s;
+    z-index: 100; /* Нижче ніж модалка */
+}
+
+.top-bar.shift-left {
+    transform: translateX(-400px); /* Зміщуємо вліво на ширину модалки */
+    width: calc(100% - 400px);
+}
+
+/* Фікс для карток проєктів, щоб не зникали */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Стилі для панелі учасників та кнопки запрошення */
+.full-width {
+    grid-column: 1 / -1;
+    margin-top: 30px;
+}
+
+.invite-box {
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.invite-box:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #FF9FFC;
+}
+
+.invite-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.modal-overlay {
+    z-index: 9999 !important;
 }

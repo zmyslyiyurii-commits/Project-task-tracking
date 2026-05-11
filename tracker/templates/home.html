@@ -3,116 +3,268 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Worksection Home</title>
+    <title>Task Tracker | Home</title>
     <link rel="stylesheet" href="{% static 'home.css' %}">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
-    <!-- Шар анімованого фону -->
     <div id="grainient-container"></div>
 
-    <!-- Вертикальна панель (Сайдбар) -->
-    <nav class="sidebar" id="sidebar">
-        <!-- Логотип -->
+    <header class="top-bar" id="main-header">
+        <div class="app-title">Task Tracker</div>
+        <div class="current-time" id="real-time">00:00:00</div>
+    </header>
+
+    <nav class="sidebar">
         <div class="nav-logo">
             <div class="logo-image-wrapper">
-                <img src="{% static 'logo.png' %}" alt="Yura" class="logo-image">
+                <img src="{% static 'logo.png' %}" alt="Logo" class="logo-image">
             </div>
         </div>
         
-        <!-- Основна група (Dock) -->
-        <div class="nav-group" id="dock-container">
-            <button class="nav-item" title="Проєкт">
+        <div class="nav-group">
+            <button class="nav-item add-item-btn" data-mode="project" title="Створити проєкт">
                 <i data-lucide="layout-grid"></i>
                 <span class="dock-label">Проєкт</span>
             </button>
-            <button class="nav-item" title="Мої завдання">
+            <button class="nav-item add-item-btn" data-mode="task" title="Створити завдання">
                 <i data-lucide="check-square"></i>
                 <span class="dock-label">Завдання</span>
             </button>
-            <button class="nav-item" title="Сповіщення">
-                <i data-lucide="bell"></i>
-                <span class="dock-label">Сповіщення</span>
-                <span class="notification-dot"></span>
-            </button>
-            <button class="nav-item" title="Пошук">
-                <i data-lucide="search"></i>
-                <span class="dock-label">Пошук</span>
-            </button>
-            <button class="nav-item" title="Чати">
-                <i data-lucide="message-circle"></i>
-                <span class="dock-label">Чати</span>
-            </button>
-            <button class="nav-item active" title="Збережене">
-                <i data-lucide="star"></i>
-                <span class="dock-label">Збережене</span>
-            </button>
+            <button class="nav-item"><i data-lucide="bell"></i><span class="dock-label">Сповіщення</span></button>
+            <button class="nav-item"><i data-lucide="search"></i><span class="dock-label">Пошук</span></button>
+            <button class="nav-item active"><i data-lucide="star"></i><span class="dock-label">Збережене</span></button>
         </div>
 
-        <!-- Нижня група -->
         <div class="nav-bottom">
-            <button class="nav-item secondary">
-                <i data-lucide="plus-circle"></i>
-                <span class="dock-label">Додати</span>
-            </button>
+            <a href="{% url 'logout' %}" class="nav-item secondary" title="Вийти">
+                <i data-lucide="log-out"></i>
+                <span class="dock-label">Вихід</span>
+            </a>
             <div class="user-avatar">{{ user.username|slice:":1"|upper }}</div>
         </div>
     </nav>
 
     <main class="main-content">
-        <div class="content-overlay"></div>
+        <div class="dashboard-grid">
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="header-left"><i data-lucide="layers"></i><h3>Проєкти</h3></div>
+                </div>
+                <div class="card-content">
+                    {% if projects %}
+                        <div class="project-tags">
+                            {% for p in projects %}
+                                <span class="project-chip">{{ p.name }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state"><h4 class="state-title">Проєктів не знайдено</h4></div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="header-left"><i data-lucide="list-todo"></i><h3>Мої задачі</h3></div>
+                </div>
+                <div class="card-content">
+                    {% if tasks %}
+                        <div class="task-list-wrapper">
+                            {% for task in tasks %}
+                            <div class="task-entry">
+                                <div class="task-info">
+                                    <i data-lucide="circle" class="task-icon"></i>
+                                    <span class="task-text">{{ task.title }}</span>
+                                    {% if task.project %}
+                                        <span class="task-project-tag">{{ task.project.name }}</span>
+                                    {% endif %}
+                                </div>
+                                <span class="task-time">{{ task.created_at|date:"H:i" }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state"><h4 class="state-title">Завдань немає</h4></div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="header-left"><i data-lucide="message-square"></i><h3>Чати</h3></div>
+                </div>
+                <div class="card-content">
+                    <div class="empty-state"><h4 class="state-title">Чати відсутні</h4></div>
+                </div>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header">
+                    <div class="header-left"><i data-lucide="bar-chart-3"></i><h3>Активність</h3></div>
+                </div>
+                <div class="card-content">
+                    <div class="chart-visual">
+                        <div class="bar" style="height: 40%"></div>
+                        <div class="bar" style="height: 70%"></div>
+                        <div class="bar" style="height: 50%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="glass-card full-width">
+            <div class="participants-list">
+                <div class="participant-item invite-box" title="Запросити друга">
+                    <div class="avatar invite-avatar"><i data-lucide="user-plus"></i></div>
+                    <button class="invite-btn">Запросити</button>
+                </div>
+                <div class="participant-item">
+                    <div class="avatar user-avatar-circle">{{ user.username|slice:":1"|upper }}</div>
+                    <div class="user-info">
+                        <span class="user-name">{{ user.username }}</span>
+                        <span class="user-org">Task Tracker</span>
+                    </div>
+                    <button class="chat-link-btn">Мій чат</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="create-modal" class="modal-overlay">
+            <div class="modal-content glass-modal">
+                <button id="close-modal" class="close-modal-fixed"><i data-lucide="x"></i></button>
+
+                <div class="modal-body-glass">
+                    <div class="project-selection-row" id="project-selector-container">
+                        <i data-lucide="folder" class="icon-mini"></i>
+                        <select id="project-source" class="glass-select-main">
+                            <option value="">Без проєкту</option>
+                            {% for project in projects %}
+                                <option value="{{ project.id }}">{{ project.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <input type="text" id="modal-title-input" class="glass-title-input" placeholder="Назва...">
+                    
+                    <div class="glass-meta-row" id="task-meta-options">
+                        <div class="glass-user-tag">
+                            <div class="avatar-mini-glass">{{ user.username|slice:":1"|upper }}</div>
+                            <span>{{ user.username }}</span>
+                        </div>
+                        <button class="glass-meta-btn">Термін</button>
+                        <button class="glass-meta-btn">Пріоритет</button>
+                        <button class="glass-meta-btn">Статус</button>
+                    </div>
+
+                    <div class="glass-toolbar">
+                        <i data-lucide="type"></i>
+                        <i data-lucide="check-square"></i>
+                        <i data-lucide="smile"></i>
+                        <i data-lucide="paperclip"></i>
+                    </div>
+                    
+                    <textarea id="modal-desc-input" class="glass-textarea" placeholder="Опис тут..."></textarea>
+                </div>
+
+                <div class="modal-footer-glass">
+                    <button class="glass-submit-btn" id="save-action-btn">
+                        <span id="submit-btn-text">Створити</span>
+                        <i data-lucide="chevron-down"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <!-- Ініціалізація фону -->
     <script type="module">
         import { initGrainient } from "{% static 'backgroundhome.js' %}";
         window.addEventListener('load', () => {
             const container = document.getElementById('grainient-container');
-            if (container) {
-                initGrainient(container, {
-                    color1: "#FF9FFC", color2: "#5227FF", color3: "#B497CF",
-                    timeSpeed: 0.2, zoom: 1.0
-                });
-                setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 50);
-            }
+            if (container) initGrainient(container, { color1: "#FF9FFC", color2: "#5227FF", color3: "#B497CF", timeSpeed: 0.2, zoom: 1.0 });
         });
     </script>
 
-    <!-- Логіка Dock анімації -->
     <script>
         lucide.createIcons();
+        
+        function updateClock() {
+            const el = document.getElementById('real-time');
+            if(el) el.textContent = new Date().toLocaleTimeString('uk-UA', { hour12: false });
+        }
+        setInterval(updateClock, 1000); updateClock();
 
-        const sidebar = document.getElementById('sidebar');
-        const items = document.querySelectorAll('.nav-item');
-        const baseSize = 48;
-        const magnification = 65;
-        const distanceLimit = 85;
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('create-modal');
+            const header = document.getElementById('main-header');
+            const openBtns = document.querySelectorAll('.add-item-btn');
+            const closeBtn = document.getElementById('close-modal');
+            const titleInput = document.getElementById('modal-title-input');
+            const projectRow = document.getElementById('project-selector-container');
+            const taskMeta = document.getElementById('task-meta-options');
+            const submitText = document.getElementById('submit-btn-text');
 
-        // Анімація працює ТІЛЬКИ коли мишка в межах сайдбару
-        sidebar.addEventListener('mousemove', (e) => {
-            items.forEach(item => {
-                const rect = item.getBoundingClientRect();
-                const centerY = rect.top + rect.height / 2;
-                const distance = Math.abs(e.clientY - centerY);
+            let currentMode = 'task';
 
-                if (distance < distanceLimit) {
-                    const ratio = 1 - distance / distanceLimit;
-                    const newSize = baseSize + (magnification - baseSize) * Math.pow(ratio, 2);
-                    item.style.width = `${newSize}px`;
-                    item.style.height = `${newSize}px`;
+            openBtns.forEach(btn => {
+                btn.onclick = () => {
+                    currentMode = btn.getAttribute('data-mode');
+                    if (currentMode === 'project') {
+                        titleInput.placeholder = "Назва проєкту...";
+                        projectRow.style.display = "none";
+                        taskMeta.style.display = "none";
+                        submitText.textContent = "Створити проєкт";
+                    } else {
+                        titleInput.placeholder = "Назва завдання...";
+                        projectRow.style.display = "flex";
+                        taskMeta.style.display = "flex";
+                        submitText.textContent = "Створити завдання";
+                    }
+                    modal.classList.add('active');
+                    header.classList.add('shift-left'); // Зміщуємо шапку
+                };
+            });
+
+            const closeModal = () => {
+                modal.classList.remove('active');
+                header.classList.remove('shift-left'); // Повертаємо шапку
+            };
+
+            closeBtn.onclick = closeModal;
+            modal.onclick = (e) => { if(e.target === modal) closeModal(); };
+
+            document.getElementById('save-action-btn').onclick = function() {
+            const titleValue = document.getElementById('modal-title-input').value.trim();
+            if (!titleValue) {
+                alert("Введіть назву!");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('mode', currentMode);
+            formData.append('title', titleValue);
+            formData.append('description', document.getElementById('modal-desc-input').value);
+            
+            const pSelect = document.getElementById('project-source');
+            if (pSelect) formData.append('project_id', currentMode === 'project' ? '' : pSelect.value);
+            
+            formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+            fetch("{% url 'create_item' %}", { method: 'POST', body: formData })
+            .then(async response => {
+                const data = await response.json();
+                if (response.ok && data.status === 'success') {
+                    location.reload();
                 } else {
-                    item.style.width = `${baseSize}px`;
-                    item.style.height = `${baseSize}px`;
+                    // Тепер ти побачиш нормальну помилку, а не Unexpected token
+                    alert("Помилка: " + (data.message || "Невідома помилка сервера"));
                 }
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Критична помилка! Перевір термінал (чорне вікно), там написано червоним, що саме зламалося.");
             });
-        });
-
-        // Скидання розмірів, коли мишка виходить за межі сайдбару
-        sidebar.addEventListener('mouseleave', () => {
-            items.forEach(item => {
-                item.style.width = `${baseSize}px`;
-                item.style.height = `${baseSize}px`;
-            });
+        };
         });
     </script>
 </body>
