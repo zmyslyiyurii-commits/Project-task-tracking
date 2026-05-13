@@ -1,6 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class UserActivity(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField(auto_now_add=True)
+    seconds_spent = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        unique_together = ('user', 'date') # Один запис на день для кожного юзера
+
+    def __str__(self):
+        return f"{self.user.username} - {self.date}: {self.seconds_spent}s"
+
 class Project(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True, null=True) 

@@ -9,7 +9,6 @@
 </head>
 <body>
     <div id="grainient-container"></div>
-
     <header class="top-bar" id="main-header">
         <div class="app-title">Task Tracker</div>
         <div class="current-time" id="real-time">00:00:00</div>
@@ -64,6 +63,7 @@
                 </div>
             </div>
 
+
             <div class="glass-card">
                 <div class="card-header">
                     <div class="header-left"><i data-lucide="list-todo"></i><h3>Мої задачі</h3></div>
@@ -72,16 +72,30 @@
                     {% if tasks %}
                         <div class="task-list-wrapper">
                             {% for task in tasks %}
-                            <div class="task-entry">
-                                <div class="task-info">
-                                    <i data-lucide="circle" class="task-icon"></i>
-                                    <span class="task-text">{{ task.title }}</span>
-                                    {% if task.project %}
-                                        <span class="task-project-tag">{{ task.project.name }}</span>
-                                    {% endif %}
+                                <!-- Додаємо перевірку: якщо task.is_completed, додасться клас completed -->
+                                <div class="task-entry {% if task.is_completed %}completed{% endif %}" id="task-{{ task.id }}">
+                                    <div class="task-info">
+                                        <span onclick="completeTask(this, {{ task.id }})" class="task-complete-link" style="cursor: pointer;">
+                                            <!-- Міняємо іконку на галочку в колі, якщо виконано -->
+                                            {% if task.is_completed %}
+                                                <i data-lucide="check-circle" class="task-icon" style="color: #4ade80;"></i>
+                                            {% else %}
+                                                <i data-lucide="circle" class="task-icon hover-check"></i>
+                                            {% endif %}
+                                        </span>
+                                        
+                                        <span class="task-text">{{ task.title }}</span>
+                                        
+                                        {% if task.project %}
+                                            <a href="{% url 'project_detail' task.project.id %}" class="task-project-tag">
+                                                {{ task.project.name }}
+                                                <!-- Додаємо приписку статусу для ясності всередині проєкту -->
+                                                {% if task.is_completed %} (Готово) {% endif %}
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    <span class="task-time">{{ task.created_at|date:"H:i" }}</span>
                                 </div>
-                                <span class="task-time">{{ task.created_at|date:"H:i" }}</span>
-                            </div>
                             {% endfor %}
                         </div>
                     {% else %}
@@ -89,6 +103,8 @@
                     {% endif %}
                 </div>
             </div>
+
+
 
             <div class="glass-card">
                 <div class="card-header">
@@ -99,19 +115,19 @@
                 </div>
             </div>
 
-            <div class="glass-card">
-                <div class="card-header">
-                    <div class="header-left"><i data-lucide="bar-chart-3"></i><h3>Активність</h3></div>
-                </div>
-                <div class="card-content">
-                    <div class="chart-visual">
-                        <div class="bar" style="height: 40%"></div>
-                        <div class="bar" style="height: 70%"></div>
-                        <div class="bar" style="height: 50%"></div>
-                    </div>
+
+        <div class="glass-card">
+            <div class="card-header">
+                <div class="header-left">
+                    <i data-lucide="bar-chart-3"></i> <!-- або твій SVG -->
+                    <h3>Активність</h3>
                 </div>
             </div>
+            <div class="card-content" style="height: 250px; position: relative;">
+                <canvas id="activityChart"></canvas>
+            </div>
         </div>
+
 
         <div class="glass-card full-width">
             <div class="participants-list">
@@ -267,5 +283,148 @@
         };
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rawData = JSON.parse('{{ activity_json|safe }}');
+            
+            // 1. Створюємо окремий масив дат для віконця (13.05)
+            const tooltipsLabels = Object.keys(rawData).map(dateStr => {
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('uk-UA', { day: '2-digit', month: '2-digit' });
+            });
+
+            // 2. Створюємо масив днів тижня для осі (Пн, Вв...)
+            const axisLabels = Object.keys(rawData).map(dateStr => {
+                const d = new Date(dateStr);
+                return d.toLocaleDateString('uk-UA', { weekday: 'short' }).replace('.', '');
+            });
+            
+            const dataValues = Object.values(rawData);
+            const canvas = document.getElementById('activityChart');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            if (window.activityChart instanceof Chart) {
+                window.activityChart.destroy();
+            }
+
+            window.activityChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: axisLabels, // На осі відображаємо Пн, Вв...
+                    datasets: [{
+                        data: dataValues,
+                        borderColor: 'rgba(255, 255, 255, 0.9)',
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.45,
+                        fill: true,
+                        pointRadius: 0,
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            enabled: true,
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                            backdropFilter: 'blur(8px)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            displayColors: false,
+                            padding: 12,
+                            callbacks: {
+                                // ЦЕЙ БЛОК ПОВЕРТАЄ ДАТУ 13.05 У ВІКОНЦЕ
+                                title: function(context) {
+                                    const index = context[0].dataIndex;
+                                    return tooltipsLabels[index]; // Беремо дату з нашого першого масиву
+                                },
+                                label: function(context) {
+                                    return `Активність: ${context.parsed.y} хв`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { 
+                            display: false, 
+                            beginAtZero: true,
+                            suggestedMax: Math.max(...dataValues) + 5
+                        },
+                        x: {
+                            grid: { display: false },
+                            border: { display: false },
+                            ticks: { 
+                                color: 'rgba(255, 255, 255, 0.7)', 
+                                font: { size: 12, weight: '500' },
+                                padding: 10
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    <script>
+    // Отримуємо JSON-рядок з контексту Django і перетворюємо його на об'єкт JS
+    const rawActivityData = JSON.parse('{{ activity_json|safe }}');
+    
+    // Формуємо масиви для графіка (дні тижня та значення)
+    const labels = Object.keys(rawActivityData); // Дати
+    const dataValues = Object.values(rawActivityData); // Хвилини
+</script>
+<script>
+    function completeTask(element, taskId) {
+        const taskEntry = element.closest('.task-entry');
+        const icon = element.querySelector('.task-icon');
+
+        // 1. Анімація іконки (твоє біле заповнення)
+        icon.classList.add('animating');
+        
+        // 2. Визначаємо URL
+        let url = "{% url 'complete_task' 12345 %}".replace('12345', taskId);
+
+        // 3. Затримка перед анімацією зникнення, щоб встигли побачити "чек"
+        setTimeout(() => {
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            }).then(response => {
+                if (response.ok) {
+                    // Додаємо клас виконаного (сірий колір, перекреслення)
+                    taskEntry.classList.add('completed');
+                    
+                    // Змінюємо іконку на галочку (якщо використовуєш Lucide)
+                    if (window.lucide) {
+                        icon.setAttribute('data-lucide', 'check-circle');
+                        lucide.createIcons();
+                    }
+
+                    // Анімація зникнення (тільки для головної сторінки)
+                    taskEntry.classList.add('fade-out');
+
+                    // Остаточне видалення з DOM через 500мс
+                    setTimeout(() => {
+                        taskEntry.remove();
+                        
+                        // Перевірка на порожній список для відображення Empty State
+                        if (document.querySelectorAll('.task-entry').length === 0) {
+                            location.reload();
+                        }
+                    }, 500);
+                }
+            }).catch(err => console.error('Error:', err));
+        }, 400);
+    }
+</script>
 </body>
 </html>

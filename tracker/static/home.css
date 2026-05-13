@@ -30,7 +30,7 @@ html, body {
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
-    z-index: 1000;
+    z-index: 2000;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
 }
 
@@ -164,7 +164,7 @@ html, body {
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
-    z-index: 900;
+    z-index: 800;
 }
 
 .app-title { color: white; font-size: 18px; font-weight: 700; }
@@ -411,7 +411,7 @@ html, body {
     width: 100%;
     height: 100vh;
     background: rgba(0, 0, 0, 0.4); /* Затемнення фону */
-    z-index: 9999;
+    z-index: 1500;
     transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     justify-content: flex-end;
@@ -947,22 +947,25 @@ html, body {
 
 /* Зміщення верхнього меню вліво при відкритій модалці */
 .top-bar {
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s;
-    z-index: 100; /* Нижче ніж модалка */
+    transition: transform 0.4s ease, opacity 0.3s ease;
+    z-index: 800; /* Нижче ніж модалка */
 }
 
 .top-bar.shift-left {
-    transform: translateX(-400px); /* Зміщуємо вліво на ширину модалки */
-    width: calc(100% - 400px);
+    left: calc(100px - 400px); /* Зміщуємо вліво на ширину модалки */
+    right: calc(12px + 400px);
 }
 
-/* Фікс для карток проєктів, щоб не зникали */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    /* Робимо 4 колонки в один ряд */
+    grid-template-columns: repeat(4, 1fr); 
+    /* Прибираємо фіксовану кількість рядів, нехай підлаштовується автоматично */
+    grid-template-rows: auto; 
     gap: 20px;
-    position: relative;
-    z-index: 1;
+    padding: 20px;
+    max-width: 100%; /* Краще поставити 100%, щоб влізло всі 4 на екран */
+    margin: 0 auto;
 }
 
 /* Стилі для панелі учасників та кнопки запрошення */
@@ -990,6 +993,153 @@ html, body {
     cursor: pointer;
 }
 
-.modal-overlay {
-    z-index: 9999 !important;
+
+@media (max-width: 1100px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
 }
+
+
+
+/* Стиль для посилання-чека */
+.task-complete-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+}
+
+.task-complete-link:hover {
+    transform: scale(1.2); /* Легке збільшення при наведенні */
+}
+
+/* Зміна іконки при наведенні */
+.hover-check:hover {
+    color: #4ade80 !important; /* Зелений колір при наведенні */
+}
+
+/* Стиль для тега проєкту, щоб він виглядав як посилання */
+.task-project-tag {
+    cursor: pointer;
+    transition: opacity 0.2s;
+    text-decoration: none;
+}
+
+.task-project-tag:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* Ефект заповнення іконки */
+.task-icon.animating {
+    color: #4ade80 !important;
+    fill: #4ade80; /* Заповнюємо внутрішню частину, якщо іконка це дозволяє */
+    transform: scale(1.2);
+    transition: all 0.4s ease;
+}
+
+/* Плавне зникнення всього рядка */
+.task-entry.fade-out {
+    opacity: 0;
+    transform: translateX(30px);
+    transition: all 0.5s ease;
+    pointer-events: none;
+}
+
+
+/* --- Анімації для списку завдань --- */
+
+/* Стан іконки при кліку (заповнення білим) */
+.task-entry .task-icon.animating {
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    transform: scale(1.3);
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7));
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Анімація видалення рядка завдання */
+.task-entry.fade-out {
+    opacity: 0 !important;
+    transform: translateX(40px) !important;
+    transition: all 0.5s ease-in-out !important;
+    pointer-events: none;
+}
+
+.top-bar {
+    background: rgba(255, 255, 255, 0.1); /* Скляний ефект */
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.task-panel {
+    padding-top: 80px; /* Щоб контент не залізав ПІД шторку з годиною */
+}
+
+/* TOP BAR */
+.top-bar {
+    position: fixed;
+
+    top: 12px;
+    left: 100px;
+    right: 12px;
+
+    height: 60px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 24px;
+
+    background: rgba(255,255,255,0.06);
+
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 22px;
+
+    z-index: 1300;
+
+    transition:
+        right 0.45s cubic-bezier(0.16,1,0.3,1),
+        opacity 0.3s ease;
+}
+
+/* КОЛИ ВІДКРИТА ШТОРКА */
+.top-bar.shift-left {
+    right: 680px; /* ширина модалки + відступ */
+    opacity: 0.85;
+}
+
+/* Клас для виконаного завдання (сірий і перекреслений) */
+.task-entry.completed .task-text {
+    text-decoration: line-through;
+    opacity: 0.5;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.task-entry.completed .task-text {
+    text-decoration: line-through; /* Перекреслюємо текст */
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.task-entry.completed .task-icon {
+    color: #4ade80 !important; /* Зелена галочка для виконаних */
+}
+
+/* Анімація зникнення (fade-out) */
+.task-entry.fade-out {
+    opacity: 0;
+    transform: translateX(30px); /* Плавно відлітає вбік */
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Стиль іконки при анімації (біле коло) */
+.task-icon.animating {
+    color: #ffffff !important;
+    fill: #ffffff;
+    transform: scale(1.2);
+    transition: all 0.3s ease;
+}
+
