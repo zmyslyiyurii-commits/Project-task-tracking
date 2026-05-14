@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class FriendshipRequest(models.Model):
+    from_user = models.ForeignKey(User, related_name='sent_invites', on_delete=models.CASCADE)
+    to_user = models.ForeignKey(User, related_name='received_invites', on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, default='pending') 
+    created_at = models.DateTimeField(auto_now_add=True)
+
 class UserActivity(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(auto_now_add=True)

@@ -44,65 +44,111 @@
         </div>
     </nav>
 
-    <main class="main-content">
-        <div class="dashboard-grid">
-            <div class="glass-card">
-                <div class="card-header">
-                    <div class="header-left"><i data-lucide="layers"></i><h3>Проєкти</h3></div>
-                </div>
-                <div class="card-content">
-                    {% if projects %}
-                        <div class="project-tags">
-                            {% for p in projects %}
-                                <span class="project-chip">{{ p.name }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="empty-state"><h4 class="state-title">Проєктів не знайдено</h4></div>
-                    {% endif %}
-                </div>
+
+
+
+<main class="main-content">
+    <div class="dashboard-grid">
+        <div class="glass-card">
+            <div class="card-header">
+                <div class="header-left"><i data-lucide="layers"></i><h3>Проєкти</h3></div>
             </div>
+            <div class="card-content">
+                {% if projects %}
+                    <div class="project-tags">
+                        {% for p in projects %}
+                            <!-- Додано onclick та кнопку-хрестик -->
+                            <span class="project-chip" style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px;" onclick="showModal('Проєкт', '{{ p.name|escapejs }}', '{{ p.description|escapejs }}')">
+                                {{ p.name }}
+                                <a href="{% url 'delete_project' p.id %}" onclick="event.stopPropagation();" style="color: inherit; opacity: 0.5;"><i data-lucide="x" style="width: 12px;"></i></a>
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state"><h4 class="state-title">Проєктів не знайдено</h4></div>
+                {% endif %}
+            </div>
+        </div>
 
-
-            <div class="glass-card">
-                <div class="card-header">
-                    <div class="header-left"><i data-lucide="list-todo"></i><h3>Мої задачі</h3></div>
-                </div>
-                <div class="card-content">
-                    {% if tasks %}
-                        <div class="task-list-wrapper">
-                            {% for task in tasks %}
-                                <!-- Додаємо перевірку: якщо task.is_completed, додасться клас completed -->
-                                <div class="task-entry {% if task.is_completed %}completed{% endif %}" id="task-{{ task.id }}">
-                                    <div class="task-info">
-                                        <span onclick="completeTask(this, {{ task.id }})" class="task-complete-link" style="cursor: pointer;">
-                                            <!-- Міняємо іконку на галочку в колі, якщо виконано -->
-                                            {% if task.is_completed %}
-                                                <i data-lucide="check-circle" class="task-icon" style="color: #4ade80;"></i>
-                                            {% else %}
-                                                <i data-lucide="circle" class="task-icon hover-check"></i>
-                                            {% endif %}
-                                        </span>
-                                        
-                                        <span class="task-text">{{ task.title }}</span>
-                                        
-                                        {% if task.project %}
-                                            <a href="{% url 'project_detail' task.project.id %}" class="task-project-tag">
-                                                {{ task.project.name }}
-                                                <!-- Додаємо приписку статусу для ясності всередині проєкту -->
-                                                {% if task.is_completed %} (Готово) {% endif %}
-                                            </a>
+        <div class="glass-card">
+            <div class="card-header">
+                <div class="header-left"><i data-lucide="list-todo"></i><h3>Мої задачі</h3></div>
+            </div>
+            <div class="card-content">
+                {% if tasks %}
+                    <div class="task-list-wrapper">
+                        {% for task in tasks %}
+                            <div class="task-entry {% if task.is_completed %}completed{% endif %}" id="task-{{ task.id }}">
+                                <div class="task-info">
+                                    <span onclick="completeTask(this, {{ task.id }})" class="task-complete-link" style="cursor: pointer;">
+                                        {% if task.is_completed %}
+                                            <i data-lucide="check-circle" class="task-icon" style="color: #4ade80;"></i>
+                                        {% else %}
+                                            <i data-lucide="circle" class="task-icon hover-check"></i>
                                         {% endif %}
-                                    </div>
-                                    <span class="task-time">{{ task.created_at|date:"H:i" }}</span>
+                                    </span>
+                                    
+                                    <!-- Додано onclick на текст -->
+                                    <span class="task-text" style="cursor: pointer;" onclick="showModal('Завдання', '{{ task.title|escapejs }}', '{{ task.description|escapejs }}')">{{ task.title }}</span>
+                                    
+                                    {% if task.project %}
+                                        <a href="{% url 'project_detail' task.project.id %}" class="task-project-tag">
+                                            {{ task.project.name }}
+                                            {% if task.is_completed %} (Готово) {% endif %}
+                                        </a>
+                                    {% endif %}
                                 </div>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <div class="empty-state"><h4 class="state-title">Завдань немає</h4></div>
-                    {% endif %}
-                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <span class="task-time">{{ task.created_at|date:"H:i" }}</span>
+                                    <!-- Додано кнопку видалення (смітник) -->
+                                    <a href="{% url 'delete_task' task.id %}" style="color: rgba(255,255,255,0.3);"><i data-lucide="trash-2" style="width: 14px;"></i></a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state"><h4 class="state-title">Завдань немає</h4></div>
+                {% endif %}
             </div>
+        </div>
+
+<!-- МОДАЛЬНЕ ВІКНО В СТИЛІ GLASS-CARD -->
+<div id="descriptionModal" onclick="closeModal()" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:10000; justify-content: center; align-items: center; backdrop-filter: blur(8px); transition: all 0.3s ease;">
+    <!-- Сама картка -->
+    <div class="glass-card" onclick="event.stopPropagation()" style="max-width: 550px; width: 90%; padding: 0; position: relative; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);">
+        <!-- Шапка модалки -->
+        <div style="padding: 20px 25px; background: rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <p id="modalLabel" style="color: rgba(255,255,255,0.4); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; margin: 0;"></p>
+                <h2 id="modalTitle" style="color: #fff; margin: 5px 0 0 0; font-size: 1.4rem; font-weight: 600;"></h2>
+            </div>
+            <button onclick="closeModal()" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+                <i data-lucide="x" style="width: 20px;"></i>
+            </button>
+        </div>
+
+        <!-- Контент (Опис) -->
+        <div style="padding: 25px; max-height: 70vh; overflow-y: auto;">
+            <p style="color: rgba(255,255,255,0.4); font-size: 0.8rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="align-left" style="width: 14px;"></i> Детальний опис:
+            </p>
+            <div id="modalDescription" style="color: rgba(255,255,255,0.85); line-height: 1.7; white-space: pre-wrap; font-size: 1rem; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);"></div>
+        </div>
+
+        <!-- Футер (опціонально) -->
+        <div style="padding: 15px 25px; background: rgba(255,255,255,0.02); text-align: right;">
+            <button onclick="closeModal()" style="background: #fff; color: #000; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 500; cursor: pointer; font-size: 0.9rem;">
+                Зрозуміло
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
 
 
 
@@ -131,10 +177,12 @@
 
         <div class="glass-card full-width">
             <div class="participants-list">
-                <div class="participant-item invite-box" title="Запросити друга">
+                <!-- Додано лише onclick для виклику вікна -->
+                <div class="participant-item invite-box" title="Запросити друга" onclick="openInviteModal()" style="cursor: pointer;">
                     <div class="avatar invite-avatar"><i data-lucide="user-plus"></i></div>
                     <button class="invite-btn">Запросити</button>
                 </div>
+                
                 <div class="participant-item">
                     <div class="avatar user-avatar-circle">{{ user.username|slice:":1"|upper }}</div>
                     <div class="user-info">
@@ -425,6 +473,37 @@
             }).catch(err => console.error('Error:', err));
         }, 400);
     }
+</script>
+<script>
+function showModal(type, title, description) {
+    const modal = document.getElementById('descriptionModal');
+    
+    // Встановлюємо заголовки
+    document.getElementById('modalLabel').innerText = "Назва " + type.toLowerCase() + ":";
+    document.getElementById('modalTitle').innerText = title;
+    
+    // Перевірка на наявність опису
+    let cleanDescription = (description && description !== "None" && description.trim() !== "") 
+                           ? description 
+                           : "Опис відсутній для цього пункту.";
+                           
+    document.getElementById('modalDescription').innerText = cleanDescription;
+    
+    // Показуємо вікно
+    modal.style.display = 'flex';
+    
+    // Оновлюємо іконки Lucide всередині модалки
+    if(window.lucide) lucide.createIcons();
+}
+
+function closeModal() {
+    document.getElementById('descriptionModal').style.display = 'none';
+}
+
+// Закриття на клавішу Esc для зручності
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
 </script>
 </body>
 </html>
